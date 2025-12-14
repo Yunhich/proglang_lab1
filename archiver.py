@@ -60,8 +60,6 @@ def compress_file(src, dst, method, benchmark): // src - путь к файлу,
 
     progress_bar(len(data), len(data))
 
-    if benchmark:
-        print(f"Время: {time.perf_counter() - start:.3f} сек") // время выполнения
 
 def decompress_file(src, dst, method, benchmark):
     start = time.perf_counter()
@@ -76,8 +74,6 @@ def decompress_file(src, dst, method, benchmark):
 
     progress_bar(len(data), len(data))
 
-    if benchmark:
-        print(f"Время: {time.perf_counter() - start:.3f} сек")
 
 # =========================
 # Директории (через tar)
@@ -138,10 +134,13 @@ def main():
 
         # пробуем как tar
         try:
-            os.makedirs(dst, exist_ok=True) // создаём папку назначения
-            unpack_directory(src, dst, method, bench) // распаковываем в неё tar-содержимое
+            unpack_directory(src, dst, method, bench)
         except tarfile.ReadError:
             decompress_file(src, dst, method, bench)
+        progress_bar(1,1)
+
+        if bench:
+            print(f"Время: {time.perf_counter() - start:.3f} сек")
 
     else: // если это не tar, распаковываем как файл
         if not dst.endswith((".zst", ".bz2")):
@@ -154,9 +153,14 @@ def main():
             pack_directory(src, dst, method, bench)
         else: // Если src - файл: сжимаем напрямую
             compress_file(src, dst, method, bench)
+        progress_bar(1,1)
+
+        if bench:
+            print(f"Время: {time.perf_counter() - start:.3f} сек")
 
 # =========================
 
 if __name__ == "__main__":
     main()
+
 
