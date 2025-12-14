@@ -1,1 +1,1 @@
-# proglang_lab1
+# Архиватор на Python 3.14
